@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate, useParams } from 'rea
 import Home from './components/Home';
 import Login from './components/Login';
 import Timetable from './components/Timetable';
+import MidMarksUpload from './components/MidMarksUpload';
 
 const ProtectedRoute = ({ element, isLoggedIn }) => {
     return isLoggedIn ? element : <Navigate to="/login" />;
@@ -21,6 +22,7 @@ const App = () => {
         <Router>
             <div className="App">
                 <Routes>
+                 <Route path="/mid-marks" element={<MidMarksUpload />} />
                     <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
                     <Route path="/login" element={<Login user={user}setIsLoggedIn={setIsLoggedIn} setUser={setUser} />} />
                     <Route
