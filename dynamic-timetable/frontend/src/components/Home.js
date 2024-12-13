@@ -59,6 +59,9 @@ const Home = () => {
                 )}
             </ul>
             <a href="/login">Faculty Login</a>
+            <br />
+            <br/>
+            <a href="/student-login">Student Login</a>
         </div>
     );
 };
