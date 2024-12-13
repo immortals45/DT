@@ -15,7 +15,7 @@ const MidMarksUpload = () => {
     useEffect(() => {
         // Mock data fetch (replace with API call)
         const fetchStudents = async () => {
-            const mockStudents = ['John Doe', 'Jane Smith', 'Alice Johnson', 'Bob Brown'];
+            const mockStudents = ['rohit sharma', 'Virat Kohli', 'MS Dhoni', 'KL Rahul', 'Rishabh Pant', 'Hardik Pandya'];
             setStudents(mockStudents);
         };
         fetchStudents();

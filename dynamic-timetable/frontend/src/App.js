@@ -22,7 +22,8 @@ const App = () => {
         <Router>
             <div className="App">
                 <Routes>
-                 <Route path="/mid-marks" element={<MidMarksUpload />} />
+                 <Route path="/mid-marks" 
+                   element={<ProtectedRoute isLoggedIn={isLoggedIn} element={MidMarksUpload} />}/>
                     <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
                     <Route path="/login" element={<Login user={user}setIsLoggedIn={setIsLoggedIn} setUser={setUser} />} />
                     <Route
