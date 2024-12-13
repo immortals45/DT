@@ -3,6 +3,7 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const cors = require('cors');
 const timetableRoutes = require('./routes/timetableRoutes');
+const studentRoutes = require('./routes/studentRoutes');
 require('dotenv').config();
 const app = express();
 connectDB();
@@ -11,6 +12,8 @@ app.use(cors());
 
 app.use('/auth', authRoutes);
 app.use('/timetable', timetableRoutes);
+app.use('/students', studentRoutes);
+
 
 app.get('/', (req, res) => res.send('Dynamic Timetable API'));
 

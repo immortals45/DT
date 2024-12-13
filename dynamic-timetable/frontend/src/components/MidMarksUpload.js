@@ -13,10 +13,19 @@ const MidMarksUpload = () => {
 
     // Fetch students list on component mount
     useEffect(() => {
-        // Mock data fetch (replace with API call)
+        // API call to fetch students
         const fetchStudents = async () => {
-            const mockStudents = ['rohit sharma', 'Virat Kohli', 'MS Dhoni', 'KL Rahul', 'Rishabh Pant', 'Hardik Pandya'];
-            setStudents(mockStudents);
+            try {
+                const response = await fetch('http://localhost:5000/students/display'); // Adjust if the URL is different
+                if (response.ok) {
+                    const data = await response.json();
+                    setStudents(data);
+                } else {
+                    console.error('Error fetching students:', response.status);
+                }
+            } catch (error) {
+                console.error('Error fetching students:', error);
+            }
         };
         fetchStudents();
     }, []);
@@ -67,8 +76,8 @@ const MidMarksUpload = () => {
                         -- Select a Student --
                     </option>
                     {students.map((student, index) => (
-                        <option key={index} value={student}>
-                            {student}
+                        <option key={index} value={student.name}>
+                            {student.name}
                         </option>
                     ))}
                 </select>

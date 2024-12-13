@@ -12,5 +12,5 @@ const studentSchema = new mongoose.Schema({
         DD: { type: Number, required: true }
     }
 });
-
-module.exports = mongoose.model('Student', studentSchema);
+const Student= mongoose.model('Student', studentSchema);
+module.exports =Student;
