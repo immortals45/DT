@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const StudentLogin = () => {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -9,12 +9,12 @@ const StudentLogin = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch('https://your-backend-api.com/login', {
+            const response = await fetch('http://localhost:5000/students/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ username, password }),
             });
 
             const data = await response.json();
@@ -36,16 +36,16 @@ const StudentLogin = () => {
             {!isLoggedIn ? (
                 <form onSubmit={handleSubmit}>
                     <div style={{ marginBottom: '15px' }}>
-                        <label htmlFor="email" style={{ display: 'block', marginBottom: '5px' }}>Email</label>
-                        <input
-                            type="email"
-                            id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
-                        />
-                    </div>
+    <label htmlFor="username" style={{ display: 'block', marginBottom: '5px' }}>Username</label>
+    <input
+        type="text"
+        id="username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        required
+        style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+    />
+</div>
                     <div style={{ marginBottom: '15px' }}>
                         <label htmlFor="password" style={{ display: 'block', marginBottom: '5px' }}>Password</label>
                         <input
