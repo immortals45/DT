@@ -36,7 +36,7 @@ const StudentLogin = () => {
             {!isLoggedIn ? (
                 <form onSubmit={handleSubmit}>
                     <div style={{ marginBottom: '15px' }}>
-    <label htmlFor="username" style={{ display: 'block', marginBottom: '5px' }}>Username</label>
+    <label htmlFor="username" style={{ display: 'block', marginBottom: '5px' }}>username</label>
     <input
         type="text"
         id="username"
@@ -63,7 +63,7 @@ const StudentLogin = () => {
                 </form>
             ) : (
                 <div>
-                    <h3>Welcome, Student!</h3>
+                    <h3>Welcome, {username}!</h3>
                     <ul style={{ listStyleType: 'none', padding: 0 }}>
                         <li style={{ margin: '10px 0' }}><a href="/view-mid-marks">View Mid-Marks</a></li>
                         <li style={{ margin: '10px 0' }}><a href="/view-attendance">View Attendance</a></li>
