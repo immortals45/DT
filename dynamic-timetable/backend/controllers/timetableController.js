@@ -98,6 +98,25 @@ exports.assignFaculty = async (req, res) => {
         period.faculty = newFaculty; // Assign new faculty
         period.status = 'occupied'; // Update status
         await timetable.save();
+        const students = await Student.find({ className: timetable.className });
+        console.log(students);
+        if (!students.length) {
+            return res.status(404).json({ message: 'No students found for this class' });
+        }
+        console.log("Students:", students.map(s => ({ name: s.name, email: s.email })));
+        const emailPromises = students.map(student => {
+            const msg = {
+                to: student.email,
+                from: 'yaswanthsharma775@gmail.com',
+                subject: `Class Modification Notification`,
+                text: `Dear ${student.name},\n\nYour class scheduled at ${time} has been modified.\n\nFaculty: ${newFaculty}\nClass: ${className}\n\nThank you.`,
+                html: `<p>Dear ${student.name},</p><p>Your class scheduled at <b>${time}</b> has been Modified.</p><p><b>Faculty:</b> ${newFaculty}<br><b>Class:</b> ${className}</p><p>Thank you.</p>`
+            };
+            return sgMail.send(msg);
+        });
+
+        await Promise.all(emailPromises);
+
 
         res.json({ message: `Faculty ${newFaculty} has been assigned to class at ${time}.` });
     } catch (error) {
