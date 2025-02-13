@@ -1,5 +1,8 @@
 const User = require('../models/User');
 const Timetable = require('../models/Timetable');
+const Student=require('../models/Student');
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey('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');
 
 // Get a specific timetable by class name
 // controllers/timetableController.js
@@ -23,7 +26,6 @@ exports.getTimetable = async (req, res) => {
     }
 };
 
-// Cancel a class period
 exports.cancelClass = async (req, res) => {
     const { className, time, faculty } = req.body;
 
@@ -38,10 +40,38 @@ exports.cancelClass = async (req, res) => {
             return res.status(400).json({ message: 'Cannot cancel an unoccupied class or class not found' });
         }
 
-        period.status = 'unoccupied'; // Update the status
+        // Update the period status
+        period.status = 'unoccupied';
         await timetable.save();
 
-        res.json({ message: `Class at ${time} has been canceled.` });
+        // Fetch all students belonging to this class
+        const students = await Student.find({ className: timetable.className });
+        console.log(students);
+
+        if (!students.length) {
+            return res.status(404).json({ message: 'No students found for this class' });
+        }
+        console.log("Students:", students.map(s => ({ name: s.name, email: s.email })));
+
+
+        // Send individual emails
+        const emailPromises = students.map(student => {
+            const msg = {
+                to: student.email,
+                from: 'yaswanthsharma775@gmail.com',
+                subject: `Class Cancellation Notification`,
+                text: `Dear ${student.name},\n\nYour class scheduled at ${time} has been canceled.\n\nFaculty: ${faculty}\nClass: ${className}\n\nThank you.`,
+                html: `<p>Dear ${student.name},</p><p>Your class scheduled at <b>${time}</b> has been canceled.</p><p><b>Faculty:</b> ${faculty}<br><b>Class:</b> ${className}</p><p>Thank you.</p>`
+            };
+            return sgMail.send(msg);
+        });
+
+        await Promise.all(emailPromises);
+
+        res.json({ 
+            message: `Class at ${time} has been canceled. Notifications sent to ${students.length} students individually.`
+        });
+
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Internal server error' });
