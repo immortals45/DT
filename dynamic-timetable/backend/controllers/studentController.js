@@ -1,5 +1,6 @@
 const Student = require('../models/Student'); // Adjust the path to where your student model is located
-
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey('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');
 // Middleware to get all students
 const getAllStudents = async (req, res, next) => {
     try {
@@ -53,7 +54,6 @@ const studentLogin = async (req, res) => {
 const updateMarksMiddleware = async (req, res) => {
     try {
         const { username, marks } = req.body;
-        console.log(username, marks);
 
         if (!username || !marks) {
             return res.status(400).json({ message: "Username and marks are required." });
@@ -63,7 +63,7 @@ const updateMarksMiddleware = async (req, res) => {
         const parsedMarks = {};
         for (let subject in marks) {
             if (marks.hasOwnProperty(subject)) {
-                parsedMarks[subject] = Number(marks[subject]); // Convert to number
+                parsedMarks[subject] = Number(marks[subject]);
                 if (isNaN(parsedMarks[subject])) {
                     return res.status(400).json({ message: `Invalid marks for ${subject}. Must be a number.` });
                 }
@@ -72,7 +72,7 @@ const updateMarksMiddleware = async (req, res) => {
 
         // Update marks in database
         const student = await Student.findOneAndUpdate(
-            { name:username },
+            { name: username },
             { $set: { marks: parsedMarks } },
             { new: true }
         );
@@ -81,14 +81,25 @@ const updateMarksMiddleware = async (req, res) => {
             return res.status(404).json({ message: "Student not found." });
         }
 
-        res.status(200).json({ message: "Marks updated successfully.", student });
+        // Prepare email content
+        const marksList = Object.entries(parsedMarks)
+            .map(([subject, mark]) => `${subject}: ${mark}`)
+            .join("\n");
+
+        const msg = {
+            to: student.email, // Make sure 'email' field exists in the Student schema
+            from: 'yaswanthsharma775@gmail.com', // Use a verified sender email
+            subject: "Your Updated Marks",
+            text: `Hello ${username},\n\nYour updated marks are:\n${marksList}\n\nBest Regards,\nYour School`,
+        };
+
+        // Send Email
+        await sgMail.send(msg);
+
+        res.status(200).json({ message: "Marks updated successfully and email sent.", student });
     } catch (error) {
         res.status(500).json({ message: "Server error.", error: error.message });
     }
 };
-
-module.exports = updateMarksMiddleware;
-
-
 
 module.exports = { getAllStudents, studentLogin, updateMarksMiddleware };
