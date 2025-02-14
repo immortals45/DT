@@ -32,7 +32,7 @@ const Login = ({ user, setUser, setIsLoggedIn }) => {
 
     return (
         <div>
-            <form onSubmit={handleSubmit}>
+            {!user.token&&(<form onSubmit={handleSubmit}>
                 <input
                     type="text"
                     name="username"
@@ -53,7 +53,7 @@ const Login = ({ user, setUser, setIsLoggedIn }) => {
                     {loading ? 'Logging in...' : 'Login'}
                 </button>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
-            </form>
+            </form>)}
 
             {/* Show options after successful login */}
             {user && user.token && (
