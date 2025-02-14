@@ -47,23 +47,32 @@ const MidMarksUpload = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!selectedStudent) {
-            setMessage('Please select a student.');
+            setMessage("Please select a student.");
             return;
         }
-
-        // Example payload to be sent to the backend
+    
         const payload = {
-            student: selectedStudent,
-            marks,
+            username: selectedStudent,
+            marks
         };
-
-        console.log('Submitted Data:', payload);
-        setMessage(`Marks submitted successfully for ${selectedStudent}!`);
+    
+        try {
+            const response = await fetch("http://localhost:5000/students/update-marks", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+    
+            const data = await response.json();
+            setMessage(response.ok ? `Marks updated successfully for ${selectedStudent}!` : data.message);
+        } catch (error) {
+            setMessage("Error updating marks.");
+        }
     };
-
+    
     return (
         <div>
             <h1>Mid Marks Upload</h1>

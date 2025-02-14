@@ -50,5 +50,45 @@ const studentLogin = async (req, res) => {
         return res.status(500).json({ success: false, message: 'Internal server error.' });
     }
 };
+const updateMarksMiddleware = async (req, res) => {
+    try {
+        const { username, marks } = req.body;
+        console.log(username, marks);
 
-module.exports = { getAllStudents, studentLogin };
+        if (!username || !marks) {
+            return res.status(400).json({ message: "Username and marks are required." });
+        }
+
+        // Convert marks from string to number
+        const parsedMarks = {};
+        for (let subject in marks) {
+            if (marks.hasOwnProperty(subject)) {
+                parsedMarks[subject] = Number(marks[subject]); // Convert to number
+                if (isNaN(parsedMarks[subject])) {
+                    return res.status(400).json({ message: `Invalid marks for ${subject}. Must be a number.` });
+                }
+            }
+        }
+
+        // Update marks in database
+        const student = await Student.findOneAndUpdate(
+            { name:username },
+            { $set: { marks: parsedMarks } },
+            { new: true }
+        );
+
+        if (!student) {
+            return res.status(404).json({ message: "Student not found." });
+        }
+
+        res.status(200).json({ message: "Marks updated successfully.", student });
+    } catch (error) {
+        res.status(500).json({ message: "Server error.", error: error.message });
+    }
+};
+
+module.exports = updateMarksMiddleware;
+
+
+
+module.exports = { getAllStudents, studentLogin, updateMarksMiddleware };
