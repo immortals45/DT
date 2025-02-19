@@ -101,5 +101,23 @@ const updateMarksMiddleware = async (req, res) => {
         res.status(500).json({ message: "Server error.", error: error.message });
     }
 };
+const fetchStudentByClass = async (req, res) => {
+    try {
+        console.log("hello");
+      const { className } = req.params;
+      const students = await Student.find({ className });
+      console.log(students);
+  
+      if (!students.length) {
+        return res.status(404).json({ message: "No students found for this class" });
+      }
+  
+      res.json(students);
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  };
+  
+  
 
-module.exports = { getAllStudents, studentLogin, updateMarksMiddleware };
+module.exports = { getAllStudents, studentLogin, updateMarksMiddleware, fetchStudentByClass };

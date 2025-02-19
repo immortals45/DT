@@ -66,6 +66,12 @@ const Login = ({ user, setUser, setIsLoggedIn }) => {
                         <Link to="/timetable/B">Class B</Link>
                     </div>
                     <div>
+                        <h3>View MidMarks</h3>
+                        <Link to="/show-marks/A">ClassA</Link>
+                        <br></br>
+                        <Link to="/show-marks/B">ClassB</Link>
+                    </div>
+                    <div>
                         <h3>Mid Marks Upload:</h3>
                         <Link to="/mid-marks">Upload Mid Marks</Link>
                     </div>
