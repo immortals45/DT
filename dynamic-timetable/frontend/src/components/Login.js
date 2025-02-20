@@ -21,7 +21,6 @@ const Login = ({ user, setUser, setIsLoggedIn }) => {
             localStorage.setItem('token', token);
             setUser({ username: credentials.username, token });
             setIsLoggedIn(true);
-            //navigate('/'); // Redirect to home or another page
         } catch (error) {
             console.error(error);
             setError(error.response?.data?.message || 'Login failed');
@@ -32,28 +31,30 @@ const Login = ({ user, setUser, setIsLoggedIn }) => {
 
     return (
         <div>
-            {!user.token&&(<form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    name="username"
-                    placeholder="Username"
-                    value={credentials.username}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={credentials.password}
-                    onChange={handleChange}
-                    required
-                />
-                <button type="submit" disabled={loading}>
-                    {loading ? 'Logging in...' : 'Login'}
-                </button>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-            </form>)}
+            {!user.token && (
+                <form onSubmit={handleSubmit}>
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Username"
+                        value={credentials.username}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        value={credentials.password}
+                        onChange={handleChange}
+                        required
+                    />
+                    <button type="submit" disabled={loading}>
+                        {loading ? 'Logging in...' : 'Login'}
+                    </button>
+                    {error && <p style={{ color: 'red' }}>{error}</p>}
+                </form>
+            )}
 
             {/* Show options after successful login */}
             {user && user.token && (
@@ -68,12 +69,16 @@ const Login = ({ user, setUser, setIsLoggedIn }) => {
                     <div>
                         <h3>View MidMarks</h3>
                         <Link to="/show-marks/A">ClassA</Link>
-                        <br></br>
+                        <br />
                         <Link to="/show-marks/B">ClassB</Link>
                     </div>
                     <div>
                         <h3>Mid Marks Upload:</h3>
                         <Link to="/mid-marks">Upload Mid Marks</Link>
+                    </div>
+                    <div>
+                        <h3>Assignments:</h3>
+                        <Link to="/publish-assignment">Publish Assignment</Link>
                     </div>
                 </div>
             )}

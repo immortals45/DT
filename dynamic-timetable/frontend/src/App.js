@@ -6,6 +6,8 @@ import Timetable from './components/Timetable';
 import MidMarksUpload from './components/MidMarksUpload';
 import StudentLogin from './components/StudentLogin';
 import ShowMarks from './components/ShowMarks';
+import PublishAssignment from './components/PublishAssignment';
+import FacultyAssignmentList from './components/FacultyAssignmentList';
 
 const ProtectedRoute = ({ element, isLoggedIn }) => {
     return isLoggedIn ? element : <Navigate to="/login" />;
@@ -27,6 +29,8 @@ const App = () => {
                  <Route path="/mid-marks" 
                         element={<ProtectedRoute isLoggedIn={isLoggedIn} element={<MidMarksUpload />} />}   
                     />
+                    <Route path="/faculty-assignments" element={<FacultyAssignmentList />} />
+                    <Route path="/publish-assignment" element={<PublishAssignment />} />
                     <Route path="/show-marks/:className" element={<ShowMarks />} />
                     <Route path="/student-login" element={<StudentLogin />} />
 
