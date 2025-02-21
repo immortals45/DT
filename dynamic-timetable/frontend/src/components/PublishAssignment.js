@@ -31,13 +31,16 @@ const PublishAssignment = () => {
                         required 
                         style={styles.input}
                     />
-                    <input 
-                        type="text" 
-                        placeholder="Class Name" 
+                    <select 
+                        value={assignment.className} 
                         onChange={(e) => setAssignment({ ...assignment, className: e.target.value })} 
                         required 
                         style={styles.input}
-                    />
+                    >
+                        <option value="" disabled>Select Class</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                    </select>
                     <input 
                         type="text" 
                         placeholder="Faculty Name" 
@@ -118,9 +121,6 @@ const styles = {
         cursor: 'pointer',
         marginTop: '10px',
         transition: 'background 0.3s'
-    },
-    buttonHover: {
-        backgroundColor: '#0056b3'
     }
 };
 

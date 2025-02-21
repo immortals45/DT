@@ -1,9 +1,9 @@
 const express = require('express');
-const { publishAssignment, getAssignments } = require('../controllers/assignmentController');
+const { publishAssignment, getAssignments ,getAssignmentsByClass} = require('../controllers/assignmentController');
 const authenticate = require('../middleware/authMiddleware');
 
 const router = express.Router();
-
+router.get('/:className', getAssignmentsByClass);
 router.post('/', authenticate, publishAssignment);
 router.get('/', authenticate, getAssignments); // Fetch assignments
 
