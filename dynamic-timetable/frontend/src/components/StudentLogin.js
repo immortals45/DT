@@ -1,78 +1,147 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { studentLogin } from '../api';
 
-const StudentLogin = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+const StudentLogin = ({ student, setIsStudentLoggedIn, setStudent }) => {
+    const [credentials, setCredentials] = useState({ username: '', password: '' });
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
+    const handleChange = (e) => {
+        setCredentials({ ...credentials, [e.target.name]: e.target.value });
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        setError('');
+        setLoading(true);
         try {
-            const response = await fetch('http://localhost:5000/students/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok && data.success) {
-                setIsLoggedIn(true);
-            } else {
-                alert(data.message || 'Invalid email or password. Please try again.');
-            }
+            const { token, username, className } = await studentLogin(credentials);
+            localStorage.setItem('token', token);
+            localStorage.setItem('className', className); // Store className
+            setStudent({ username, token, className });
+            setIsStudentLoggedIn(true);
         } catch (error) {
-            console.error('Error during login:', error);
-            alert('Something went wrong. Please try again later.');
+            console.error(error);
+            setError(error.response?.data?.message || 'Login failed');
+        } finally {
+            setLoading(false);
         }
     };
+    
 
     return (
-        <div style={{ maxWidth: '400px', margin: '50px auto', textAlign: 'center' }}>
-            <h2>Student Login</h2>
-            {!isLoggedIn ? (
-                <form onSubmit={handleSubmit}>
-                    <div style={{ marginBottom: '15px' }}>
-    <label htmlFor="username" style={{ display: 'block', marginBottom: '5px' }}>username</label>
-    <input
-        type="text"
-        id="username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        required
-        style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
-    />
-</div>
-                    <div style={{ marginBottom: '15px' }}>
-                        <label htmlFor="password" style={{ display: 'block', marginBottom: '5px' }}>Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
-                        />
-                    </div>
-                    <button type="submit" style={{ padding: '10px 20px', backgroundColor: '#007BFF', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
-                        Login
+        <div style={styles.container}>
+            {!student.token && (
+                <form onSubmit={handleSubmit} style={styles.form}>
+                    <h2 style={styles.heading}>Student Login</h2>
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Username"
+                        value={credentials.username}
+                        onChange={handleChange}
+                        required
+                        style={styles.input}
+                    />
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        value={credentials.password}
+                        onChange={handleChange}
+                        required
+                        style={styles.input}
+                    />
+                    <button type="submit" disabled={loading} style={styles.button}>
+                        {loading ? 'Logging in...' : 'Login'}
                     </button>
+                    {error && <p style={styles.error}>{error}</p>}
                 </form>
-            ) : (
-                <div>
-                    <h3>Welcome, {username}!</h3>
-                    <ul style={{ listStyleType: 'none', padding: 0 }}>
-                        <li style={{ margin: '10px 0' }}><a href="/view-mid-marks">View Mid-Marks</a></li>
-                        <li style={{ margin: '10px 0' }}><a href="/view-attendance">View Attendance</a></li>
-                        <li style={{ margin: '10px 0' }}><a href="/view-assignments">View Assignments</a></li>
-                    </ul>
+            )}
+
+            {/* Show options after successful login */}
+            {student && student.token && (
+                <div style={styles.optionsContainer}>
+                    <h2 style={styles.heading}>Options</h2>
+                    <div style={styles.optionSection}>
+                        <h3>Assignments:</h3>
+                        <Link to="/view-assignments" style={styles.link}>View Assignments</Link>
+                    </div>
+                    <div style={styles.optionSection}>
+                        <h3>View MidMarks:</h3>
+                        <Link to="/view-midmarks" style={styles.link}>View MidMarks</Link>
+                    </div>
                 </div>
             )}
         </div>
     );
+};
+
+// Inline styles
+const styles = {
+    container: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        backgroundColor: '#f4f4f4',
+        padding: '20px',
+    },
+    form: {
+        backgroundColor: '#fff',
+        padding: '20px',
+        borderRadius: '8px',
+        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px',
+        width: '300px',
+        textAlign: 'center',
+    },
+    heading: {
+        marginBottom: '10px',
+        color: '#333',
+    },
+    input: {
+        padding: '10px',
+        borderRadius: '5px',
+        border: '1px solid #ccc',
+        fontSize: '16px',
+    },
+    button: {
+        padding: '10px',
+        borderRadius: '5px',
+        border: 'none',
+        backgroundColor: '#007bff',
+        color: '#fff',
+        cursor: 'pointer',
+        fontSize: '16px',
+    },
+    error: {
+        color: 'red',
+        fontSize: '14px',
+    },
+    optionsContainer: {
+        backgroundColor: '#fff',
+        padding: '20px',
+        borderRadius: '8px',
+        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+        width: '320px',
+        marginTop: '20px',
+        textAlign: 'center',
+    },
+    optionSection: {
+        marginBottom: '10px',
+    },
+    link: {
+        display: 'block',
+        textDecoration: 'none',
+        color: '#007bff',
+        fontSize: '16px',
+        margin: '5px 0',
+    },
 };
 
 export default StudentLogin;

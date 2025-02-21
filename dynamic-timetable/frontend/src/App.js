@@ -21,6 +21,8 @@ const TimetableWrapper = ({ user }) => {
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState({});
+    const[isStudentLoggedIn, setIsStudentLoggedIn] = useState(false);
+    const [student, setStudent] = useState({});
 
     return (
         <Router>
@@ -32,7 +34,7 @@ const App = () => {
                     <Route path="/faculty-assignments" element={<FacultyAssignmentList />} />
                     <Route path="/publish-assignment" element={<PublishAssignment />} />
                     <Route path="/show-marks/:className" element={<ShowMarks />} />
-                    <Route path="/student-login" element={<StudentLogin />} />
+                    <Route path="/student-login" element={<StudentLogin student={student} setIsStudentLoggedIn={setIsStudentLoggedIn} setStudent={setStudent}/>} />
 
                     <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
                     <Route path="/login" element={<Login user={user}setIsLoggedIn={setIsLoggedIn} setUser={setUser} />} />

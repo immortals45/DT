@@ -7,6 +7,10 @@ export const login = async (credentials) => {
     const response = await axios.post(`${API_URL}/auth/login`, credentials);
     return response.data; // Return user data
 };
+export const studentLogin = async (credentials) => {
+    const response = await axios.post(`${API_URL}/auth/student-login`, credentials);
+    return response.data; // Return student data
+};
 
 // Get timetable for a specific class
 
