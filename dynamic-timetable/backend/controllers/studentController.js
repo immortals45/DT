@@ -117,7 +117,19 @@ const fetchStudentByClass = async (req, res) => {
       res.status(500).json({ message: "Server error", error: error.message });
     }
   };
-  
-  
+  const fetchStudentMarks = async (req, res) => {
+    try {
+        const { studentId } = req.params;
+        
+        const student = await Student.findById(studentId).select('marks');
+        console.log(student);
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+        }
 
-module.exports = { getAllStudents, studentLogin, updateMarksMiddleware, fetchStudentByClass };
+        res.json(student.marks);
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+module.exports = { getAllStudents, studentLogin, updateMarksMiddleware, fetchStudentByClass,fetchStudentMarks};

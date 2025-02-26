@@ -9,6 +9,7 @@ import ShowMarks from './components/ShowMarks';
 import PublishAssignment from './components/PublishAssignment';
 import FacultyAssignmentList from './components/FacultyAssignmentList';
 import ViewAssignments from './components/ViewAssignments';
+import ViewMidMarks from './components/ViewMidMarks';
 
 const ProtectedRoute = ({ element, isLoggedIn }) => {
     return isLoggedIn ? element : <Navigate to="/login" />;
@@ -40,6 +41,11 @@ const App = () => {
     path="/view-assignments" 
     element={<ProtectedRoute isLoggedIn={isStudentLoggedIn} element={<ViewAssignments student={student} />} />} 
 />
+<Route 
+    path="/view-midmarks" 
+    element={<ProtectedRoute isLoggedIn={isStudentLoggedIn} element={<ViewMidMarks student={student} />} />} 
+/>
+
 
 
                     <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />

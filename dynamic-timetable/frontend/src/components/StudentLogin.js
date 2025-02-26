@@ -16,10 +16,16 @@ const StudentLogin = ({ student, setIsStudentLoggedIn, setStudent }) => {
         setError('');
         setLoading(true);
         try {
-            const { token, username, className } = await studentLogin(credentials);
+            const { token, username, className, studentId } = await studentLogin(credentials);
+            console.log('token', token);
+            console.log('username', username);
+            console.log('className', className);
+            console.log('studentId', studentId);
             localStorage.setItem('token', token);
-            localStorage.setItem('className', className); // Store className
-            setStudent({ username, token, className });
+            localStorage.setItem('className', className);
+            localStorage.setItem('studentId', studentId); // Store studentId
+    
+            setStudent({ username, token, className, studentId });
             setIsStudentLoggedIn(true);
         } catch (error) {
             console.error(error);
@@ -28,6 +34,7 @@ const StudentLogin = ({ student, setIsStudentLoggedIn, setStudent }) => {
             setLoading(false);
         }
     };
+    
     
 
     return (
